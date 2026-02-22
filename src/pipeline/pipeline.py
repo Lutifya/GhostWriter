@@ -40,7 +40,7 @@ from src.stt.vad import VADFilter
 
 TranscriptCallback = Callable[[str, float], None]   # (text, latency_ms)
 
-_SENTINEL = None   # poison pill for queue shutdown
+_SENTINEL = object()   # unique poison pill for queue shutdown – never use None
 
 
 class Pipeline:
@@ -90,8 +90,8 @@ class Pipeline:
         self._max_segment_samples = int(max_segment_s * samplerate)
 
         # Queues
-        self._pcm_queue: queue.Queue[np.ndarray | None] = queue.Queue(maxsize=pcm_queue_size)
-        self._speech_queue: queue.Queue[np.ndarray | None] = queue.Queue(maxsize=speech_queue_size)
+        self._pcm_queue: queue.Queue[np.ndarray | object] = queue.Queue(maxsize=pcm_queue_size)
+        self._speech_queue: queue.Queue[np.ndarray | object] = queue.Queue(maxsize=speech_queue_size)
 
         # Audio capture (OS-specific)
         self._capture: AudioCapture = create_capture(samplerate=samplerate, blocksize=blocksize)

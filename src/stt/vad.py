@@ -11,9 +11,7 @@ Reference: https://github.com/snakers4/silero-vad
 
 from __future__ import annotations
 
-import io
 from dataclasses import dataclass
-from typing import Generator
 
 import numpy as np
 

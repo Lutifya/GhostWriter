@@ -16,14 +16,13 @@ from __future__ import annotations
 
 import platform
 import time
-from dataclasses import dataclass, field
-from typing import Generator, Literal
+from dataclasses import dataclass
+from typing import Literal
 
 import numpy as np
 
 try:
     from faster_whisper import WhisperModel
-    from faster_whisper.transcribe import Segment
 except ImportError as exc:
     raise ImportError(
         "faster-whisper is required: pip install faster-whisper"

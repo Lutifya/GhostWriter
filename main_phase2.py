@@ -20,7 +20,6 @@ Usage
 from __future__ import annotations
 
 import argparse
-import queue
 import time
 import wave
 from pathlib import Path
@@ -66,7 +65,6 @@ def record_clip(seconds: float) -> np.ndarray:
     from src.audio.capture import create_capture
 
     buf: list[np.ndarray] = []
-    done = queue.Event() if False else __import__("threading").Event()
 
     def on_audio(block: np.ndarray) -> None:
         buf.append(block.copy())

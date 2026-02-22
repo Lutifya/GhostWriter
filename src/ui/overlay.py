@@ -20,14 +20,11 @@ Thread safety
 from __future__ import annotations
 
 import platform
-import sys
-from typing import Optional
 
 from PyQt6.QtCore import (
     Qt,
     QTimer,
-    QMetaObject,
-    Q_ARG,
+    pyqtSignal,
     pyqtSlot,
 )
 from PyQt6.QtGui import (
@@ -35,7 +32,6 @@ from PyQt6.QtGui import (
     QFont,
     QPainter,
     QPainterPath,
-    QPen,
 )
 from PyQt6.QtWidgets import QApplication, QLabel, QWidget
 
@@ -57,6 +53,9 @@ class OverlayWindow(QWidget):
     max_chars : int
         Maximum characters to display at once (older text is trimmed).
     """
+
+    # Class-level signal: emitting from any thread routes to _set_text in the UI thread.
+    _show_text_signal = pyqtSignal(str)
 
     # Styling constants
     _BG_COLOR = QColor(0, 0, 0, 180)           # RGBA – semi-transparent black
@@ -81,6 +80,8 @@ class OverlayWindow(QWidget):
         self._setup_window()
         self._setup_label(font_size)
         self._setup_timer()
+        # Connect the cross-thread signal to the UI-thread slot
+        self._show_text_signal.connect(self._set_text)
 
     # ──────────────────────────────────────────────────────────────────
     # Setup
@@ -123,14 +124,9 @@ class OverlayWindow(QWidget):
     def show_text(self, text: str) -> None:
         """
         Display *text* in the overlay.
-        Safe to call from any thread.
+        Safe to call from any thread – emits a queued signal to the UI thread.
         """
-        QMetaObject.invokeMethod(
-            self,
-            "_set_text",
-            Qt.ConnectionType.QueuedConnection,
-            Q_ARG(str, text),
-        )
+        self._show_text_signal.emit(text)
 
     # ──────────────────────────────────────────────────────────────────
     # Slots (UI thread only)
