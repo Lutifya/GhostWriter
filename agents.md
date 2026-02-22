@@ -25,6 +25,36 @@ Stack: Python 3.12+, faster-whisper (Distil-Whisper), silero-vad, PyQt6, soundde
 
 ---
 
+## Build & Run
+
+```bash
+make setup          # create .venv + pip install -r requirements.txt
+make devices        # list audio input devices
+make phase1         # audio RMS monitor
+make phase2         # record 5 s and transcribe
+make phase2-wav WAV=file.wav  # transcribe a WAV file
+make phase3         # live transcription (console)
+make run            # full overlay app
+make clean          # remove .venv and __pycache__
+
+# Override model/language:
+make phase3 MODEL=distil-medium.en LANG=en
+```
+
+---
+
+## Known Fixed Bugs
+
+| File | Bug | Fix |
+|------|-----|-----|
+| `pipeline.py` | `_SENTINEL = None` — VAD worker exited on every `queue.Empty` timeout because `None is None` | Changed to `_SENTINEL = object()` |
+| `overlay.py` | `Q_ARG` does not exist in PyQt6, causing `ImportError` at startup | Replaced with `pyqtSignal(str)` + `signal.emit()` |
+| `engine.py` | `from faster_whisper.transcribe import Segment` — may not exist in all versions | Removed unused import |
+| `vad.py` | Unused `io`, `Generator` imports | Removed |
+| `main_phase2.py` | Dead `done` variable using `__import__` trick | Removed |
+
+---
+
 ## Phase 1 – Audio Capture (`src/audio/capture.py`)
 
 ### Architecture
