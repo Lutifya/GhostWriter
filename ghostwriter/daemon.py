@@ -14,6 +14,7 @@ runs in a second daemon thread; the Tkinter event loop runs on the main
 thread (required by Tk on most platforms).
 """
 
+import queue
 import signal
 import sys
 import threading
@@ -116,7 +117,7 @@ class GhostWriterDaemon:
                 try:
                     chunk = self._audio_capture.read(timeout=1.0)
                     self._transcriber.feed_audio(chunk)
-                except Exception:  # noqa: BLE001
+                except queue.Empty:
                     pass
         finally:
             self._audio_capture.stop()
@@ -126,7 +127,7 @@ class GhostWriterDaemon:
         if self._overlay is not None:
             self._overlay.show_text(text)
 
-    def _signal_handler(self, signum, frame) -> None:  # noqa: ARG002
+    def _signal_handler(self, _signum, _frame) -> None:
         """Handle SIGINT / SIGTERM for clean shutdown."""
         self.stop()
         sys.exit(0)

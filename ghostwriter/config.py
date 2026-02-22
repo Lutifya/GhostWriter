@@ -46,7 +46,7 @@ class Config:
     text_color: str = "white"
     background_color: str = "black"
     opacity: float = 0.85
-    display_duration: int = 5000
+    display_duration: int = 5_000
     position: str = "bottom"
     max_lines: int = 2
 
