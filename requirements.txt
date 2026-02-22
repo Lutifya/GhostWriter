@@ -1,0 +1,18 @@
+# ── Audio capture ──────────────────────────────────────────────────────────────
+sounddevice>=0.4.6
+numpy>=1.26.0
+
+# ── STT engine ─────────────────────────────────────────────────────────────────
+faster-whisper>=1.0.0
+# torch is pulled in by faster-whisper; install CUDA wheels manually on Windows/Linux
+# pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+# ── VAD ────────────────────────────────────────────────────────────────────────
+silero-vad>=5.1.1
+# requires: torch (already a dependency of silero-vad)
+
+# ── UI ─────────────────────────────────────────────────────────────────────────
+PyQt6>=6.6.0
+
+# ── Utilities ──────────────────────────────────────────────────────────────────
+loguru>=0.7.2
